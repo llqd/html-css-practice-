@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>jd轮播图</title>
+		<style type="text/css">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			ul,li{
+				list-style: none;
+			}
+			a{
+				text-decoration: none;
+			}
+			#banner{
+				width: 590px;height: 470px;
+				position: relative;
+				margin: 50px auto;
+			}
+			#banner ul li{
+				position: absolute;
+				left: 0;
+				opacity: 0;
+				transition: opacity 0.5s;
+				z-index: 0;
+			}
+			#banner ul .showli{
+				opacity: 1;
+				z-index: 1;
+			}
+			#banner .next{
+				width: 30px;
+				height: 30px;
+				position: absolute;
+				left: 0;
+				top: 50%;
+				background: transparent;
+				border-left: 3px solid #ccc;
+				border-bottom: 3px solid #ccc;
+				border-right: transparent;
+				border-top: transparent;
+				transform: rotate(45deg);
+				z-index: 2;
+				margin-top: -15px;
+			}
+			#banner .prev{
+				width: 30px;
+				height: 30px;
+				position: absolute;
+				right: 0;
+				top: 50%;
+				background: transparent;
+				border-left: 3px solid #ccc;
+				border-bottom: 3px solid #ccc;
+				border-right: transparent;
+				border-top: transparent;
+				transform: rotate(225deg);
+				z-index: 2;
+				margin-top: -15px;
+			}
+			#tab{
+				position: absolute;
+				left: 50%;
+				bottom: 10%;
+				z-index: 2;
+			}
+			#tab ul li {
+				position: static;
+				float: left;
+				width: 8px;
+				height: 8px;
+				background: transparent;
+				border: 3px solid #999;
+				border-radius:8px;
+				margin: 10px;
+				cursor: pointer;
+				opacity: 1;
+			}
+			#tab ul .active{
+				width: 11px;
+				height: 11px;
+				background: red;
+				border:3px solid #CCCCCC;
+				border-radius: 11px;
+			}
+		</style>
+		<script type="text/javascript">
+			window.onload=function(){
+				var oDiv=document.getElementById('banner');
+				var oPrev=getByClass(oDiv,'prev')[0];
+				var oNext=getByClass(oDiv,'next')[0];
+				var oUl=oDiv.getElementsByTagName('ul')[0];
+				var aLi=oUl.getElementsByTagName('li');
+				var oTab=document.getElementById('tab');
+				var asmallUl=oTab.getElementsByTagName('ul')[0];
+				var asmallLi=asmallUl.getElementsByTagName('li');
+				var z=0;//这里是用来记录当前显示的是哪张图片
+				var timer=null;
+				//首先做出自动轮播的方法，更改opacity的值
+				oTab.style.marginLeft=-(oTab.offsetWidth/2)+'px';
+				aLi[z].className='showli';//加载设置默认
+				asmallLi[z].className='active';//加载设置默认
+				/*
+				 每次执行一次定时器，那么所有的li的opacity的值都会为0，将第1个li的为1，第二次的时候第2个li位1
+				 * */
+				//左右按钮
+				oPrev.onclick=function(){
+					if(z==aLi.length-1){//当z等于图片长度的时候说明到头了，要把z归零
+						z=0;
+					}else{
+						z++;//否则z+1
+					}
+					for(var i=0;i<aLi.length;i++){//这个for循环用来清空所有的class
+						aLi[i].className='';
+						asmallLi[i].className='';
+					}
+					aLi[z].className='showli';//开始走下一页
+					asmallLi[z].className='active';//设置小点点跟着一起动
+					clearInterval(timer);//当点击按钮的时候关闭自动播放
+				};
+				oNext.onclick=function(){
+					if(z==0){
+						z=aLi.length-1;
+					}else{
+						z--;
+					}
+					for(var i=0;i<aLi.length;i++){
+						aLi[i].className='';
+						asmallLi[i].className='';
+					}
+					aLi[z].className='showli';
+					asmallLi[z].className='active';
+					clearInterval(timer);
+				};
+				
+				tab(asmallLi,aLi);//小点点的方法
+				
+				timer=setInterval(function(){
+					if(z==aLi.length-1){
+						z=0;
+					}else{
+						z++;
+					}
+					for(var i=0;i<aLi.length;i++){
+						aLi[i].className='';
+						asmallLi[i].className='';
+					}
+					aLi[z].className='showli';
+					asmallLi[z].className='active';
+				},1500);
+				
+				
+			};
+			function show(index){
+				aLi[index].className='showli';
+				asmallLi[index].className='active';
+				clearInterval(timer);
+			};
+			
+			function tab(obj,itarget){
+				for(var i=0;i<obj.length;i++){
+					obj[i].index=i;
+					obj[i].onmouseover=function(){
+						for(var i=0;i<itarget.length;i++){
+							obj[i].className='';
+							itarget[i].className='';
+						}
+						this.className='active';
+						itarget[this.index].className='showli';
+					};
+					
+				}
+				
+			};
+			/*
+			 1关闭原来的定时器。
+			 2设置定时器，设置一个变量存储json中的参数
+			 3.开始json循环改变要更变的值
+			 4.设置当前值变量，设置速度值变量，
+			 5.判断json中的值为那个参数，如果是opacity需要把值取整去小数，如果是其他的值，就去掉px单位，赋值给当前值
+			 6.写获取元素样式值的方法getStyle()
+			 7.设置速度值，开始进行缓冲运动,速度值等于json目标值-当前值/8
+			 8.得到速度值后判断运动方向是正还是负，正的向上取整，负的向下取整
+			 9.判断json的目标点是什么属性，如果是opacity就。。。如果不是就。。。
+			 10.完成运动后判断是否完成json中所有参数的运动bstop,当前值是否等于目标值，
+			 11.循环结束后判断bstop的值是否为true,如果是那么关闭定时器，做链式运动，如果为false，那么不关闭定时器，继续执行运动
+			 * */
+			/*function setStyle(obj,json){
+				var attr='';
+				for(attr in json){
+					
+				}
+			}*/
+			function startMove(obj,json,fn){
+				astop=false;
+				console.log(obj);
+				clearInterval(obj.timer);
+				var attr='';
+				obj.timer=setInterval(function(){
+					var bstop=true;
+					for(attr in json){
+						var iCur;//当前值
+						if(attr == 'opacity'){
+							iCur=parseFloat(getStyle(obj,attr)*100);//如果
+						}else{
+							iCur=parseInt(getStyle(obj,attr));
+						}
+						//速度值
+						var ispeed=(json[attr]-iCur)/8;
+						ispeed=ispeed>0? Math.ceil(ispeed):Math.floor(ispeed);
+						
+						if(iCur!=json[attr]){
+							bstop=false;
+						}
+						
+						if(attr=='opacity'){
+							obj.style.opacity=parseFloat((iCur+ispeed)/100);
+							obj.style.fiter='alpha(opacity'+(iCur+ispeed)+')';
+						}else{
+							obj.style[attr]=iCur+ispeed+'px';
+						}
+					}
+					if(bstop){
+						clearInterval(obj.timer);
+						astop=true;
+						console.log(obj);
+						if(fn){
+							fn();
+						}
+					}
+					
+				},30);
+				
+				
+			}
+			function getStyle(obj,attr){
+				if(obj.currentStyle){
+					return obj.currentStyle[attr];
+				}else{
+					return getComputedStyle(obj,null)[attr];
+				}
+			}
+			function getByClass(obj,sclass){
+				var aRsult=[];
+				var aEle=obj.getElementsByTagName('*');
+				for(var i=0;i<aEle.length;i++){
+					if(aEle[i].className==sclass){
+						aRsult.push(aEle[i]);
+					}
+				}
+				return aRsult;
+			}
+		</script>
+	</head>
+	<body>
+			<div id="banner">
+				<a  class="prev"></a>
+				<a  class="next"></a>
+				<ul>
+					<li><a href=""><img src="img/1.jpg"/></a></li>
+					<li><a href=""><img src="img/2.jpg"/></a></li>
+					<li><a href=""><img src="img/3.jpg"/></a></li>
+					<li><a href=""><img src="img/4.jpg"/></a></li>
+					<li><a href=""><img src="img/5.jpg"/></a></li>
+					<li><a href=""><img src="img/6.jpg"/></a></li>
+				</ul>
+				<div id="tab">
+					<ul>
+						<li class="active"><a href=""></a></li>
+						<li><a href=""></a></li>
+						<li><a href=""></a></li>
+						<li><a href=""></a></li>
+						<li><a href=""></a></li>
+						<li><a href=""></a></li>
+					</ul>	
+				</div>
+			</div>
+		
+	</body>
+</html>
