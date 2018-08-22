@@ -60,13 +60,14 @@
 				z-index: 2;
 				margin-top: -15px;
 			}
-			#tab{
+			#banner #tab{
 				position: absolute;
 				left: 50%;
 				bottom: 10%;
 				z-index: 2;
+				background: transparent;
 			}
-			#tab ul li {
+			#banner #tab>li{
 				position: static;
 				float: left;
 				width: 8px;
@@ -78,7 +79,7 @@
 				cursor: pointer;
 				opacity: 1;
 			}
-			#tab ul .active{
+			#banner #tab>.active{
 				width: 11px;
 				height: 11px;
 				background: red;
@@ -94,8 +95,7 @@
 				var oUl=oDiv.getElementsByTagName('ul')[0];
 				var aLi=oUl.getElementsByTagName('li');
 				var oTab=document.getElementById('tab');
-				var asmallUl=oTab.getElementsByTagName('ul')[0];
-				var asmallLi=asmallUl.getElementsByTagName('li');
+				var asmallLi=oTab.getElementsByTagName('li');
 				var z=0;//这里是用来记录当前显示的是哪张图片
 				var timer=null;
 				//首先做出自动轮播的方法，更改opacity的值
@@ -107,11 +107,8 @@
 				 * */
 				//左右按钮
 				oPrev.onclick=function(){
-					if(z==aLi.length-1){//当z等于图片长度的时候说明到头了，要把z归零
-						z=0;
-					}else{
-						z++;//否则z+1
-					}
+					z++;
+					z=z%aLi.length;//当前显示的图片下标取余aLi.length的长度，，如取余为0，那么说明到头了，如果没有就等于
 					for(var i=0;i<aLi.length;i++){//这个for循环用来清空所有的class
 						aLi[i].className='';
 						asmallLi[i].className='';
@@ -121,11 +118,7 @@
 					clearInterval(timer);//当点击按钮的时候关闭自动播放
 				};
 				oNext.onclick=function(){
-					if(z==0){
-						z=aLi.length-1;
-					}else{
-						z--;
-					}
+					z==0?z=aLi.length-1:z--;
 					for(var i=0;i<aLi.length;i++){
 						aLi[i].className='';
 						asmallLi[i].className='';
@@ -133,6 +126,7 @@
 					aLi[z].className='showli';
 					asmallLi[z].className='active';
 					clearInterval(timer);
+					
 				};
 				
 				tab(asmallLi,aLi);//小点点的方法
@@ -149,16 +143,11 @@
 					}
 					aLi[z].className='showli';
 					asmallLi[z].className='active';
-				},1500);
+				},2000);
 				
 				
 			};
-			function show(index){
-				aLi[index].className='showli';
-				asmallLi[index].className='active';
-				clearInterval(timer);
-			};
-			
+		
 			function tab(obj,itarget){
 				for(var i=0;i<obj.length;i++){
 					obj[i].index=i;
@@ -232,8 +221,6 @@
 					}
 					
 				},30);
-				
-				
 			}
 			function getStyle(obj,attr){
 				if(obj.currentStyle){
@@ -266,16 +253,14 @@
 					<li><a href=""><img src="img/5.jpg"/></a></li>
 					<li><a href=""><img src="img/6.jpg"/></a></li>
 				</ul>
-				<div id="tab">
-					<ul>
+				<ul id="tab">
 						<li class="active"><a href=""></a></li>
 						<li><a href=""></a></li>
 						<li><a href=""></a></li>
 						<li><a href=""></a></li>
 						<li><a href=""></a></li>
 						<li><a href=""></a></li>
-					</ul>	
-				</div>
+				</ul>	
 			</div>
 		
 	</body>
