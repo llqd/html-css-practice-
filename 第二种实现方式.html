@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>第二种实现方式</title>
+		<style type="text/css">
+			body,ul ,li{
+				padding: 0;
+				margin: 0;
+			}
+			ul,li{
+				list-style: none;
+			}
+			.raing{
+				width: 130px;
+				height: 26px;
+				margin: 50px auto;
+			}
+			.raing .raing-item{
+				float: left;
+				width: 26px;
+				height: 20px;
+				background: url(img/1png.png) no-repeat;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<ul id="ul1" class="raing">
+			<li class="raing-item" title="差"></li>
+			<li class="raing-item" title="一般"></li>
+			<li class="raing-item" title="还不错"></li>
+			<li class="raing-item" title="好"></li>
+			<li class="raing-item" title="很好"></li>
+		</ul>
+		<script type="text/javascript">
+			
+			(function(){
+				var oUl=document.getElementById('ul1');
+				var aLi=oUl.getElementsByTagName('li');
+				var num=2;
+				//点亮方法
+				function show(num){
+					for(var i=0;i<aLi.length;i++){
+						aLi[i].index=i;
+						if(aLi[i].index<num){
+							aLi[i].style.backgroundPosition='0 -25px';
+						}else{
+							aLi[i].style.backgroundPosition='0 0';
+						}
+					}
+				}
+				//初始化
+				show(num);
+				//事件绑定
+				oUl.onmousemove=function(ev){
+					var Ev=ev||window.event;
+					var target=Ev.target||Ev.srcElement;// target是ev带的属性，srcElement是IE兼容写法
+					if(target.nodeName.toLowerCase()=="li")//判断发生事件target的属性名称是什么，target的返回值是大写的，所以要转换成效小写
+					show(target.index+1);
+				}
+				oUl.onmouseout=function(ev){
+					show(num);
+				}
+				oUl.onclick=function(ev){
+					var Ev=ev||window.event;
+					var target=Ev.target||Ev.srcElement;// target是ev带的属性，srcElement是IE兼容写法
+					if(target.nodeName.toLowerCase()=="li")//判断发生事件target的属性名称是什么，target的返回值是大写的，所以要转换成效小写
+					num=target.index+1;
+				}
+				
+				})();
+			
+			
+		/*	
+			for(var i=0;i<aLi.length;i++){
+				aLi[i].index=i;
+				aLi[i].onmouseover=function(){
+					show(this.index+1);
+				}
+				aLi[i].onclick=function(){
+					num=this.index+1;
+				}
+			}
+			oUl.onmouseout=function(){
+				show(num);
+			}*/
+		</script>
+	</body>
+</html>

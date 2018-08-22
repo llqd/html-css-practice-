@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>第一种实现方式</title>
+		<style type="text/css">
+			body,ul ,li{
+				padding: 0;
+				margin: 0;
+			}
+			ul,li{
+				list-style: none;
+			}
+			.raing{
+				width: 130px;
+				height: 26px;
+				margin: 50px auto;
+			}
+			.raing .raing-item{
+				float: left;
+				width: 26px;
+				height: 20px;
+				background: url(img/1png.png) no-repeat;
+				cursor: pointer;
+			}
+		</style>
+		<script type="text/javascript">
+			window.onload=function(){
+				var oUl=document.getElementById('ul1');
+				var aLi=oUl.getElementsByTagName('li');
+				var num=2;
+				//初始化亮2个灯
+				lighten(num);
+				
+				//绑定事件
+				for(var i=0;i<aLi.length;i++){
+					aLi[i].index=i;
+					aLi[i].onmouseover=function(){
+						lighten(this,i);
+					}
+				}
+				
+				
+				
+			};
+			//先做点亮的方法，然后为li添加鼠标移入事件和鼠标点击事件，还有ul的鼠标移除事件
+			function lighten(num){
+				
+				for(var i=0;i<obj.length;i++){
+				obj[i].index=i;   //为li加上索引值
+					if(obj[i].index<num){  //如果小于默认值的话就点亮
+						obj[i].style.backgroundPosition='0 -26px';
+					}else{
+						obj[i].style.backgroundPosition='0 0'; //大于的话就不点亮
+					}
+				}
+			}
+			
+		</script>
+	</head>
+	<body>
+		<ul id="ul1" class="raing">
+			<li class="raing-item" title="差"></li>
+			<li class="raing-item" title="一般"></li>
+			<li class="raing-item" title="还不错"></li>
+			<li class="raing-item" title="好"></li>
+			<li class="raing-item" title="很好"></li>
+		</ul>
+	</body>
+</html>

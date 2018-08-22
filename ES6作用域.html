@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>ES6作用域</title>
+		<script type="text/javascript">
+			const arr1=[];
+			for(var i=0; i<=2;i++){
+				arr1[i]=function(){
+				
+					return i*2;
+				}
+				console.log(arr1[i]());
+			}
+			/*console.table([
+				arr1[0](),
+				arr1[1](),
+				arr1[2](),
+			]);*/
+			(function(){
+				
+			})();
+			
+			/*const arr2=[];
+			for(let j=0; j<=2;j++){
+				arr2[j]=function(){
+					return j*2;
+				}
+			}
+			console.table([
+				arr2[0](),
+				arr2[1](),
+				arr2[2](),
+			]);*/
+			
+		</script>
+	</head>
+	<body>
+	</body>
+</html>

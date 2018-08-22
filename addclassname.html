@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>add</title>
+		<script type="text/javascript">
+			window.onload=function(){
+				//addClassName(document.getElementById('box'),'on');
+				removeClassname(document.getElementById('box'),'on');
+			};
+			function addClassName(obj,sclass){
+				if(obj.className){
+					var arrname=obj.className.split(' ');
+					for(var i=0;i<arrname.length;i++){
+						if(arrname[i]==sclass)
+						return;
+					}
+					obj.className+=' '+sclass;
+					
+				}else{
+					obj.className=sclass;
+				}
+			}
+			function removeClassname(obj,sclass){
+				if(obj.className){
+					var arrname=obj.className.split(' ');
+					obj.className='';
+					for(var i=0;i<arrname.length;i++){
+						
+						if(arrname[i]==sclass){
+							arrname.splice(i,1);//.splice(开始的位置，删除几位，替换成什么可缺省)用来删除数据，但是会影响数组长度
+							i--;//数组长度出现变化，如果出现重复的css 那么i回到原来这一位，再重新检测
+						}
+						obj.className=arrname.join(' '); //join(按什么规律组合) 方法用于把数组中的所有元素放入一个字符串
+					}
+					
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id="box" class="box on">
+			
+		</div>
+	</body>
+</html>
